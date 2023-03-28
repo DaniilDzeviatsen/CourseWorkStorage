@@ -2,22 +2,23 @@ package model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Currency;
 
 public class CurrencyRate {
-    private  String currencyName;
+    private Currency currency;
     private BigDecimal sellRate;
     private BigDecimal buyRate;
      private LocalDate requestedDate;
 
-    public CurrencyRate (LocalDate requestedDate, String currencyName, BigDecimal sellRate, BigDecimal buyRate){
+    public CurrencyRate (LocalDate requestedDate, String currencyCode, BigDecimal sellRate, BigDecimal buyRate){
         this.buyRate=buyRate;
         this.sellRate=sellRate;
-        this.currencyName=currencyName;
+        this.currency=Currency.getInstance(currencyCode);
         this.requestedDate=requestedDate;
     }
 
-    public String getCurrencyName() {
-        return currencyName;
+    public Currency getCurrency() {
+        return currency;
     }
 
     public LocalDate getRequestedDate() {
