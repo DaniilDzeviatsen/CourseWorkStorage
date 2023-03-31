@@ -24,11 +24,9 @@ public class RatesFileRepository {
     public RatesFileRepository(RepositoryProperties props) {
 
         this.props = props;
-
         try {
             if (Files.notExists(props.getStorageDir())) {
                 Files.createDirectories(props.getStorageDir());
-                System.out.println("OK");
             }
 
         } catch (IOException e) {
@@ -90,6 +88,7 @@ public class RatesFileRepository {
             throw new UncheckedIOException(e);
         }
     }
+
     private CurrencyRate parseCurrencyRate(String csvLine) {
         String[] parts = csvLine.split(",");
         String currencyCode = parts[CURRENCY_CODE_COLUMN];

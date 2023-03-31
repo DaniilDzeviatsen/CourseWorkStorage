@@ -4,15 +4,17 @@ import controller.RatesController;
 import service.ExchangeServiceImpl;
 
 import java.nio.file.Path;
+import java.util.Currency;
 import java.util.List;
 
 public class Application {
     public static void main(String[] args) {
         Path storageDir = Path.of(System.getenv("EXCHANGER_FILE_STORAGE_DIR"));
-        RepositoryProperties rateProps = new RepositoryProperties(storageDir);
+        Currency localCurrency = Currency.getInstance(System.getenv("LOCAL_CURRENCY_CODE"));
+        RepositoryProperties rateProps = new RepositoryProperties(storageDir, localCurrency);
 
         RatesFileRepository ratesFileRepository = new RatesFileRepository(rateProps);
-        ExchangeServiceImpl service = new ExchangeServiceImpl(ratesFileRepository);
+        ExchangeServiceImpl service = new ExchangeServiceImpl(ratesFileRepository, localCurrency);
         RatesController ratesController = new RatesController(service);
         if (args.length > 0) {
             String command = args[0];
