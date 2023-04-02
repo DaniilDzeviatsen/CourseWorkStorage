@@ -56,7 +56,7 @@ public class ExchangeServiceImpl /*implements ExchangeService*/ {
     public void putExchangeRate(LocalDate requestedDate, String currencyCode, BigDecimal buyRate, BigDecimal
             sellRate) {
         CurrencyRate newCurrencyRate = new CurrencyRate(currencyCode, sellRate, buyRate);
-        List<CurrencyRate> listOfExistingRates = fileRepository.listCurrencyRates(requestedDate);
+       // List<CurrencyRate> listOfExistingRates = fileRepository.listCurrencyRates(requestedDate);
         /*ListIterator<CurrencyRate> i=listOfExistingRates.listIterator();
         while(i.hasNext()){
             CurrencyRate currencyRate= i.next();
@@ -70,6 +70,6 @@ public class ExchangeServiceImpl /*implements ExchangeService*/ {
             throw new LocalCurrencyException();
         }
 
-        fileRepository.saveCurrencyRate(newCurrencyRate, requestedDate);
+        fileRepository.putExchangeRates(newCurrencyRate, requestedDate);
     }
 }

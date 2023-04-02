@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 public class RatesFileRepository {
     private final int CURRENCY_CODE_COLUMN = 0;
@@ -37,27 +38,13 @@ public class RatesFileRepository {
     }
 
 
-    public void saveCurrencyRate(CurrencyRate currencyRate, LocalDate requestedDate) {
+    private void saveCurrencyRate(CurrencyRate currencyRate, LocalDate requestedDate) {
 
         try {
             Path filePath = props.getStorageDir().resolve(requestedDate + ".csv");
             if (Files.notExists(filePath)) {
                 Files.createFile(filePath);
             }
-           /* List<CurrencyRate> listOfExistingRates=listCurrencyRates(requestedDate);
-
-            try {
-                Files.delete(filePath);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            Iterator<CurrencyRate> i = listOfExistingRates.iterator();
-            while (i.hasNext()) {
-                CurrencyRate currencyRate = i.next();
-                if (currencyRate.getCurrencyCode().equals(currencyCode)) {
-                    i.remove();
-                }
-            }*/
             String csvLine = String.join(
                     ",",
                     currencyRate.getCurrencyCode(),
@@ -123,6 +110,37 @@ public class RatesFileRepository {
             throw new UncheckedIOException(e);
         }
     }
+
+    public void putExchangeRates(CurrencyRate currencyRate, LocalDate requestedDate) {
+        Path filePath = props.getStorageDir().resolve(requestedDate + ".csv");
+        String currencyCode = currencyRate.getCurrencyCode();
+        boolean a = true;
+        List<CurrencyRate> rates = listCurrencyRates(requestedDate);
+        if (!rates.isEmpty()) {
+            for (CurrencyRate rate : rates) {
+                if (rate.getCurrencyCode().equals(currencyCode)) {
+                    a = false;
+                    try {
+                        Files.delete(filePath);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    ListIterator<CurrencyRate> i = rates.listIterator();
+                    while (i.hasNext()) {
+                        CurrencyRate exchangeRate = i.next();
+                        if (exchangeRate.getCurrencyCode().equals(currencyCode)) {
+                            i.set(currencyRate);
+                        }
+                    }
+                    saveListOfRatesToFile(rates, requestedDate);
+                }
+            }
+            if (a) saveCurrencyRate(currencyRate, requestedDate);
+        } else {
+            saveCurrencyRate(currencyRate, requestedDate);
+        }
+    }
+
 
     private CurrencyRate parseCurrencyRate(String csvLine) {
         String[] parts = csvLine.split(",");

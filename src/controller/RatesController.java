@@ -55,8 +55,11 @@ public class RatesController {
         if (dayRates.isEmpty()) {
             System.out.println("Нет курсов");
         } else {
-            System.out.printf("%5s %5s %5s", dayRates.get(0), dayRates.get(1), dayRates.get(2));
-            System.out.println();
+            int m = 0;
+            for (CurrencyRate rate : dayRates) {
+                System.out.println(dayRates.get(m));
+                m++;
+            }
         }
     }
 
