@@ -26,6 +26,8 @@ public class RatesController {
             switch (command) {
                 case "admin/putExchangeRate" -> handlePutExchangeRateCommand(options);
                 case "client/listExchangeRates" -> handleListExchangeRatesCommand(options);
+                case "admin/removeExchangeRate" -> handleRemoveExchangeRate(options);
+                case "client/exchange" -> handleExchange(options);
             }
         } catch (ApplicationException e) {
             System.err.println(e);
@@ -34,6 +36,14 @@ public class RatesController {
             System.err.println("Неизвестная ошибка");
         }
 
+    }
+
+    public void handleRemoveExchangeRate(List<String> options) {
+        validateOptionsCount(options, 2);
+        LocalDate requestedDate = LocalDate.parse(options.get(0));
+        String currencyCode = options.get(1);
+        service.removeExchangeRate(requestedDate, currencyCode);
+        System.out.println("ExchangeRate deleted");
     }
 
     public void handleListExchangeRatesCommand(List<String> options) {
@@ -49,12 +59,7 @@ public class RatesController {
             System.out.println();
         }
     }
-    //System.out.println(dayRates.toString());
-       /* List<String> listOfRates = null;
-        for (CurrencyRate rate : dayRates) {
-            listOfRates.add(dayRates.get(rate).toString());
-            System.out.println("List of rates is above");
-        }*/
+
 
 
     public void handlePutExchangeRateCommand(List<String> options) {
@@ -72,5 +77,14 @@ public class RatesController {
         if (options.size() != requiredCount) {
             throw new InvalidCommandException();
         }
+    }
+
+    public void handleExchange(List<String> options) {
+        validateOptionsCount(options, 4);
+        LocalDate requestedDate = LocalDate.parse(options.get(0));
+        BigDecimal sum = BigDecimal.valueOf(Double.parseDouble(options.get(1)));
+        String initialCurrencyCode = options.get(2);
+        String aimCurrencyCode = options.get(3);
+        System.out.println(service.exchange(requestedDate, sum, initialCurrencyCode, aimCurrencyCode));
     }
 }

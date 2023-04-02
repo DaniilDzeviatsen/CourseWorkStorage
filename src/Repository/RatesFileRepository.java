@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class RatesFileRepository {
@@ -43,6 +44,20 @@ public class RatesFileRepository {
             if (Files.notExists(filePath)) {
                 Files.createFile(filePath);
             }
+           /* List<CurrencyRate> listOfExistingRates=listCurrencyRates(requestedDate);
+
+            try {
+                Files.delete(filePath);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            Iterator<CurrencyRate> i = listOfExistingRates.iterator();
+            while (i.hasNext()) {
+                CurrencyRate currencyRate = i.next();
+                if (currencyRate.getCurrencyCode().equals(currencyCode)) {
+                    i.remove();
+                }
+            }*/
             String csvLine = String.join(
                     ",",
                     currencyRate.getCurrencyCode(),
@@ -63,7 +78,27 @@ public class RatesFileRepository {
 
 
     public void removeCurrencyRate(LocalDate requestedDate, String currencyCode) {
-        System.out.println("not  ready yet");
+        Path filePath = props.getStorageDir().resolve(requestedDate + ".csv");
+        List<CurrencyRate> rates = listCurrencyRates(requestedDate);
+        try {
+            Files.delete(filePath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Iterator<CurrencyRate> i = rates.iterator();
+        while (i.hasNext()) {
+            CurrencyRate currencyRate = i.next();
+            if (currencyRate.getCurrencyCode().equals(currencyCode)) {
+                i.remove();
+            }
+        }
+        saveListOfRatesToFile(rates, requestedDate);
+    }
+
+    private void saveListOfRatesToFile(List<CurrencyRate> rates, LocalDate requestedDate) {
+        for (CurrencyRate rate : rates) {
+            saveCurrencyRate(rate, requestedDate);
+        }
     }
 
     public List<CurrencyRate> listCurrencyRates(LocalDate requestedDate) {
