@@ -55,14 +55,11 @@ public class RatesController {
         if (dayRates.isEmpty()) {
             System.out.println("Нет курсов");
         } else {
-            int m = 0;
-            for (CurrencyRate rate : dayRates) {
-                System.out.println(dayRates.get(m));
-                m++;
+            for (int i = 0; i < dayRates.size(); i++) {
+                System.out.println(dayRates.get(i));
             }
         }
     }
-
 
 
     public void handlePutExchangeRateCommand(List<String> options) {
