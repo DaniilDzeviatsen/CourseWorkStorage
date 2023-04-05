@@ -64,9 +64,10 @@ public class RatesFileRepository {
     }
 
 
-    public void removeCurrencyRate(LocalDate requestedDate, String currencyCode) {
+    public boolean removeCurrencyRate(LocalDate requestedDate, String currencyCode) {
         Path filePath = props.getStorageDir().resolve(requestedDate + ".csv");
         List<CurrencyRate> rates = listCurrencyRates(requestedDate);
+        boolean ifRemoved = false;
         try {
             Files.delete(filePath);
         } catch (IOException e) {
@@ -77,9 +78,11 @@ public class RatesFileRepository {
             CurrencyRate currencyRate = i.next();
             if (currencyRate.getCurrencyCode().equals(currencyCode)) {
                 i.remove();
+                ifRemoved = true;
             }
         }
         saveListOfRatesToFile(rates, requestedDate);
+        return ifRemoved;
     }
 
     private void saveListOfRatesToFile(List<CurrencyRate> rates, LocalDate requestedDate) {

@@ -1,7 +1,9 @@
 package service;
 
 import Repository.RatesFileRepository;
+import exceptions.ApplicationException;
 import exceptions.LocalCurrencyException;
+import exceptions.NonExistingCurrencyException;
 import model.CurrencyRate;
 
 import java.math.BigDecimal;
@@ -23,8 +25,11 @@ public class ExchangeServiceImpl /*implements ExchangeService*/ {
     }
 
 
-    public void removeExchangeRate(LocalDate requestedDate, String currencyCode) {
-        fileRepository.removeCurrencyRate(requestedDate, currencyCode);
+    public boolean removeExchangeRate(LocalDate requestedDate, String currencyCode) {
+        if (fileRepository.removeCurrencyRate(requestedDate, currencyCode)) {
+            return true;
+        }
+        return false;
     }
 
 
@@ -48,28 +53,27 @@ public class ExchangeServiceImpl /*implements ExchangeService*/ {
                 aimCourse = rate.getSellRate();
             }
         }
-        BigDecimal finalSum = initialCourse.multiply(sum);
-        return finalSum.divide(aimCourse, 4, RoundingMode.HALF_UP);
-
+        try {
+            BigDecimal finalSum = initialCourse.multiply(sum);
+            return finalSum.divide(aimCourse, 4, RoundingMode.HALF_UP);
+        } catch (Exception e) {
+            throw new NonExistingCurrencyException();
+        }
     }
 
-    public void putExchangeRate(LocalDate requestedDate, String currencyCode, BigDecimal buyRate, BigDecimal
+    public boolean putExchangeRate(LocalDate requestedDate, String currencyCode, BigDecimal buyRate, BigDecimal
             sellRate) {
+        boolean ifAdded = false;
         CurrencyRate newCurrencyRate = new CurrencyRate(currencyCode, sellRate, buyRate);
-       // List<CurrencyRate> listOfExistingRates = fileRepository.listCurrencyRates(requestedDate);
-        /*ListIterator<CurrencyRate> i=listOfExistingRates.listIterator();
-        while(i.hasNext()){
-            CurrencyRate currencyRate= i.next();
-            if (currencyRate.getCurrencyCode().equals(currencyCode)){
-                i.set(newCurrencyRate);
+        try {
+            if (Currency.getInstance(currencyCode) == localCurrency) {
+                throw new LocalCurrencyException();
             }
-        }*/
-
-        if (Currency.getInstance(currencyCode) == localCurrency) {
-            System.err.println("Невозможно добавить базовую валюту");
-            throw new LocalCurrencyException();
+            fileRepository.putExchangeRates(newCurrencyRate, requestedDate);
+            ifAdded = true;
+        } catch (ApplicationException e) {
+            System.err.println(e.getDisplayMessage());
         }
-
-        fileRepository.putExchangeRates(newCurrencyRate, requestedDate);
+        return ifAdded;
     }
 }
