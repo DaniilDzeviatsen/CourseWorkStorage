@@ -76,10 +76,10 @@ public class RatesController {
                 && ifInputDataIsCurrency(options.get(3)) && ifInputCurseIsPositive(options.get(2)) &&
                 ifInputCurseIsPositive(options.get(3)))) {
             LocalDate requestedDate = LocalDate.parse(options.get(0));
-            String currencyCode = options.get(1);
+            Currency currency = Currency.getInstance(options.get(1));
             BigDecimal buyRate = BigDecimal.valueOf(Double.parseDouble(options.get(2)));
             BigDecimal sellRate = BigDecimal.valueOf(Double.parseDouble(options.get(3)));
-            if (service.putExchangeRate(requestedDate, currencyCode, buyRate, sellRate)) {
+            if (service.putExchangeRate(requestedDate, currency, buyRate, sellRate)) {
                 System.out.println("ExchangeRate saved");
             }
         }

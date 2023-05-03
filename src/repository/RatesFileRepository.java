@@ -1,7 +1,7 @@
-package Repository;
+package repository;
 
-import RepositoryProperties.RepositoryProperties;
 import model.CurrencyRate;
+import repositoryProperties.RepositoryProperties;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -11,12 +11,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
-public class RatesFileRepository {
+public class RatesFileRepository implements FileRepository {
     private final int CURRENCY_CODE_COLUMN = 0;
     private final int SELL_RATE_COLUMN = 1;
     private final int BUY_RATE_COLUMN = 2;
@@ -47,7 +44,7 @@ public class RatesFileRepository {
             }
             String csvLine = String.join(
                     ",",
-                    currencyRate.getCurrencyCode(),
+                    currencyRate.getCurrencyCode().toString(),
                     currencyRate.getBuyRate().toString(),
                     currencyRate.getSellRate().toString()
             ) + System.lineSeparator();
@@ -86,9 +83,26 @@ public class RatesFileRepository {
     }
 
     private void saveListOfRatesToFile(List<CurrencyRate> rates, LocalDate requestedDate) {
-        for (CurrencyRate rate : rates) {
-            saveCurrencyRate(rate, requestedDate);
+        try {
+            Path filePath = props.getStorageDir().resolve(requestedDate + ".csv");
+            List<String> csvLines = new ArrayList<>();
+            for (CurrencyRate rate : rates) {
+                String csvLine = serializeToCsvLine(rate);
+                csvLines.add(csvLine);
+            }
+            Files.write(filePath, csvLines, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
+    }
+
+    private String serializeToCsvLine(CurrencyRate rate) {
+        return String.join(
+                ",",
+                rate.getCurrencyCode().toString(),
+                rate.getBuyRate().toString(),
+                rate.getSellRate().toString()
+        );
     }
 
     public List<CurrencyRate> listCurrencyRates(LocalDate requestedDate) {
@@ -116,12 +130,12 @@ public class RatesFileRepository {
 
     public void putExchangeRates(CurrencyRate currencyRate, LocalDate requestedDate) {
         Path filePath = props.getStorageDir().resolve(requestedDate + ".csv");
-        String currencyCode = currencyRate.getCurrencyCode();
+        Currency currency = currencyRate.getCurrencyCode();
         boolean a = true;
         List<CurrencyRate> rates = listCurrencyRates(requestedDate);
         if (!rates.isEmpty()) {
             for (CurrencyRate rate : rates) {
-                if (rate.getCurrencyCode().equals(currencyCode)) {
+                if (rate.getCurrencyCode().equals(currency)) {
                     a = false;
                     try {
                         Files.delete(filePath);
@@ -131,7 +145,7 @@ public class RatesFileRepository {
                     ListIterator<CurrencyRate> i = rates.listIterator();
                     while (i.hasNext()) {
                         CurrencyRate exchangeRate = i.next();
-                        if (exchangeRate.getCurrencyCode().equals(currencyCode)) {
+                        if (exchangeRate.getCurrencyCode().equals(currency)) {
                             i.set(currencyRate);
                         }
                     }
@@ -147,9 +161,9 @@ public class RatesFileRepository {
 
     private CurrencyRate parseCurrencyRate(String csvLine) {
         String[] parts = csvLine.split(",");
-        String currencyCode = parts[CURRENCY_CODE_COLUMN];
+        Currency currency = Currency.getInstance(parts[CURRENCY_CODE_COLUMN]);
         BigDecimal buyRate = BigDecimal.valueOf(Double.parseDouble(parts[BUY_RATE_COLUMN]));
         BigDecimal sellRate = BigDecimal.valueOf(Double.parseDouble(parts[SELL_RATE_COLUMN]));
-        return new CurrencyRate(currencyCode, buyRate, sellRate);
+        return new CurrencyRate(currency, buyRate, sellRate);
     }
 }

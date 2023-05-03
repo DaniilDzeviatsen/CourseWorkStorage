@@ -1,4 +1,4 @@
-package Repository;
+package repository;
 
 import model.CurrencyRate;
 
@@ -8,7 +8,7 @@ import java.util.List;
 public interface FileRepository {
     List<CurrencyRate> listCurrencyRates(LocalDate requestedDate);
 
-    boolean saveCurrencyRate(CurrencyRate currencyRate, LocalDate requestedDate);
+    void putExchangeRates(CurrencyRate currencyRate, LocalDate requestedDate);
 
-    void removeCurrencyRate(LocalDate requestedDate, String currencyCode);
+    boolean removeCurrencyRate(LocalDate requestedDate, String currencyCode);
 }

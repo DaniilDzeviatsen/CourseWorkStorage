@@ -1,6 +1,6 @@
-import Repository.RatesFileRepository;
-import RepositoryProperties.RepositoryProperties;
 import controller.RatesController;
+import repository.RatesFileRepository;
+import repositoryProperties.RepositoryProperties;
 import service.ExchangeServiceImpl;
 
 import java.nio.file.Path;

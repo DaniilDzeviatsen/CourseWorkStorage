@@ -1,4 +1,4 @@
-package RepositoryProperties;
+package repositoryProperties;
 
 import java.nio.file.Path;
 import java.util.Currency;

@@ -4,31 +4,20 @@ import java.math.BigDecimal;
 import java.util.Currency;
 
 public class CurrencyRate {
-    private String currencyCode;
-    private Currency currency;
-    private BigDecimal sellRate;
-    private BigDecimal buyRate;
-    //private LocalDate requestedDate;
+    private final Currency currency;
+    private final BigDecimal sellRate;
+    private final BigDecimal buyRate;
 
-    public CurrencyRate(String currencyCode, BigDecimal sellRate, BigDecimal buyRate) {
+
+    public CurrencyRate(Currency currency, BigDecimal sellRate, BigDecimal buyRate) {
         this.buyRate = buyRate;
         this.sellRate = sellRate;
-        this.currency = Currency.getInstance(currencyCode);
-        //this.requestedDate = requestedDate;
-        this.currencyCode = currencyCode;
+        this.currency = currency;
     }
 
-    public String getCurrencyCode() {
-        return currencyCode;
-    }
-
-    public Currency getCurrency() {
+    public Currency getCurrencyCode() {
         return currency;
     }
-
-    /*public LocalDate getRequestedDate() {
-        return requestedDate;
-    }*/
 
     public BigDecimal getSellRate() {
         return sellRate;
@@ -39,6 +28,6 @@ public class CurrencyRate {
     }
 
     public String toString() {
-        return String.format("%-5s%6s%8s\n", currencyCode, buyRate, sellRate);
+        return String.format("%-5s%6s%8s\n", currency, buyRate, sellRate);
     }
 }

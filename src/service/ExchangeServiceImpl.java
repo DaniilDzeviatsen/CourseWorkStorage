@@ -1,10 +1,10 @@
 package service;
 
-import Repository.RatesFileRepository;
 import exceptions.ApplicationException;
 import exceptions.LocalCurrencyException;
 import exceptions.NonExistingCurrencyException;
 import model.CurrencyRate;
+import repository.RatesFileRepository;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -14,9 +14,9 @@ import java.util.Currency;
 import java.util.List;
 import java.util.Objects;
 
-public class ExchangeServiceImpl /*implements ExchangeService*/ {
+public class ExchangeServiceImpl implements ExchangeService {
     private final RatesFileRepository fileRepository;
-    private Currency localCurrency;
+    private final Currency localCurrency;
 
 
     public ExchangeServiceImpl(RatesFileRepository fileRepository, Currency localCurrency) {
@@ -61,12 +61,12 @@ public class ExchangeServiceImpl /*implements ExchangeService*/ {
         }
     }
 
-    public boolean putExchangeRate(LocalDate requestedDate, String currencyCode, BigDecimal buyRate, BigDecimal
+    public boolean putExchangeRate(LocalDate requestedDate, Currency currency, BigDecimal buyRate, BigDecimal
             sellRate) {
         boolean ifAdded = false;
-        CurrencyRate newCurrencyRate = new CurrencyRate(currencyCode, sellRate, buyRate);
+        CurrencyRate newCurrencyRate = new CurrencyRate(currency, sellRate, buyRate);
         try {
-            if (Currency.getInstance(currencyCode) == localCurrency) {
+            if (currency == localCurrency) {
                 throw new LocalCurrencyException();
             }
             fileRepository.putExchangeRates(newCurrencyRate, requestedDate);
