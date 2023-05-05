@@ -60,7 +60,7 @@
       </envs>
       <option name="MAIN_CLASS_NAME" value="Application" />
       <module name="Courswork" />
-      <option name="PROGRAM_PARAMETERS" value="admin/removeExchangeRate 2023-03-15 EUR" />
+      <option name="PROGRAM_PARAMETERS" value="admin/putExchangeRate 2023-03-16 CNY 232.89 243.93" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -159,7 +159,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683117447703</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="final first draft">
+      <created>1683286688233</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1683286688233</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -206,7 +213,7 @@
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/src/service/ExchangeServiceImpl.java</url>
           <line>41</line>
-          <properties class="service.ExchangeServiceImpl">
+          <properties class="service.ExchangeServiceImpl" method="exchange">
             <option name="EMULATED" value="true" />
             <option name="WATCH_EXIT" value="false" />
           </properties>
@@ -214,12 +221,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/src/repository/RatesFileRepository.java</url>
-          <line>117</line>
-          <properties class="repository.RatesFileRepository">
+          <line>131</line>
+          <properties class="repository.RatesFileRepository" method="putExchangeRates">
             <option name="EMULATED" value="true" />
             <option name="WATCH_EXIT" value="false" />
           </properties>
-          <option name="timeStamp" value="57" />
+          <option name="timeStamp" value="66" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/controller/RatesController.java</url>

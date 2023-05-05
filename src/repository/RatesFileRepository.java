@@ -132,31 +132,25 @@ public class RatesFileRepository implements FileRepository {
     public void putExchangeRates(CurrencyRate currencyRate, LocalDate requestedDate) {
         Path filePath = props.getStorageDir().resolve(requestedDate + ".csv");
         Currency currency = currencyRate.getCurrencyCode();
-        boolean a = true;
+        boolean ifSaveRate = true;
         List<CurrencyRate> rates = listCurrencyRates(requestedDate);
-        if (!rates.isEmpty()) {
-            for (CurrencyRate rate : rates) {
-                if (rate.getCurrencyCode().equals(currency)) {
-                    a = false;
-                    try {
-                        Files.delete(filePath);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    ListIterator<CurrencyRate> i = rates.listIterator();
-                    while (i.hasNext()) {
-                        CurrencyRate exchangeRate = i.next();
-                        if (exchangeRate.getCurrencyCode().equals(currency)) {
-                            i.set(currencyRate);
-                        }
-                    }
-                    saveListOfRatesToFile(rates, requestedDate);
+        ListIterator<CurrencyRate> i = rates.listIterator();
+        while (i.hasNext()) {
+            CurrencyRate exchangeRate = i.next();
+            if (exchangeRate.getCurrencyCode().equals(currency)) {
+                ifSaveRate = false;
+                try {
+                    Files.delete(filePath);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
+                i.set(currencyRate);
+                break;
             }
-            if (a) saveCurrencyRate(currencyRate, requestedDate);
-        } else {
-            saveCurrencyRate(currencyRate, requestedDate);
         }
+        saveListOfRatesToFile(rates, requestedDate);
+
+        if (ifSaveRate) saveCurrencyRate(currencyRate, requestedDate);
     }
 
 
