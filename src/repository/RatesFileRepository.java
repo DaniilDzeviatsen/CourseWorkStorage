@@ -65,18 +65,19 @@ public class RatesFileRepository implements FileRepository {
         Path filePath = props.getStorageDir().resolve(requestedDate + ".csv");
         List<CurrencyRate> rates = listCurrencyRates(requestedDate);
         boolean ifRemoved = false;
-        try {
-            Files.delete(filePath);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
         Iterator<CurrencyRate> i = rates.iterator();
         while (i.hasNext()) {
             CurrencyRate currencyRate = i.next();
-            if (currencyRate.getCurrencyCode().equals(currencyCode)) {
+            if (currencyRate.getCurrencyCode().toString().equals(currencyCode)) {
+                try {
+                    Files.delete(filePath);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 i.remove();
                 ifRemoved = true;
             }
+            break;
         }
         saveListOfRatesToFile(rates, requestedDate);
         return ifRemoved;
