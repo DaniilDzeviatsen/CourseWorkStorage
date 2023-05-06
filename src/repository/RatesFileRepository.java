@@ -76,8 +76,8 @@ public class RatesFileRepository implements FileRepository {
                 }
                 i.remove();
                 ifRemoved = true;
+                break;
             }
-            break;
         }
         saveListOfRatesToFile(rates, requestedDate);
         return ifRemoved;

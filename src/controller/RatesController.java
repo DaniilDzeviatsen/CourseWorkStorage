@@ -48,9 +48,8 @@ public class RatesController {
         if (ifInputCurrencyCorrect(options.get(1))) {
             LocalDate requestedDate = LocalDate.parse(options.get(0));
             String currencyCode = options.get(1);
-            if (service.removeExchangeRate(requestedDate, currencyCode)) {
-                System.out.println("ExchangeRate deleted");
-            } else System.err.println("Такой валюты нет в списке");
+            service.removeExchangeRate(requestedDate, currencyCode);
+            System.out.println("ExchangeRate deleted");
         }
     }
 
@@ -79,9 +78,9 @@ public class RatesController {
             Currency currency = Currency.getInstance(options.get(1));
             BigDecimal buyRate = BigDecimal.valueOf(Double.parseDouble(options.get(2)));
             BigDecimal sellRate = BigDecimal.valueOf(Double.parseDouble(options.get(3)));
-            if (service.putExchangeRate(requestedDate, currency, buyRate, sellRate)) {
-                System.out.println("ExchangeRate saved");
-            }
+            service.putExchangeRate(requestedDate, currency, buyRate, sellRate);
+            System.out.println("ExchangeRate saved");
+
         }
     }
 

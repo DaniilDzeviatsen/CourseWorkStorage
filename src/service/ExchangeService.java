@@ -8,10 +8,10 @@ import java.util.Currency;
 import java.util.List;
 
 public interface ExchangeService {
-    boolean putExchangeRate(LocalDate requestedDate, Currency currency, BigDecimal buyRate, BigDecimal
+    void putExchangeRate(LocalDate requestedDate, Currency currency, BigDecimal buyRate, BigDecimal
             sellRate);
 
-    boolean removeExchangeRate(LocalDate requestedDate, String currencyCode);
+    void removeExchangeRate(LocalDate requestedDate, String currencyCode);
 
     List<CurrencyRate> listExchangeRatesHistory(LocalDate requestedDate);
 
