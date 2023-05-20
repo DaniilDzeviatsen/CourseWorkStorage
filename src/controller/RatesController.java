@@ -2,6 +2,7 @@ package controller;
 
 import exceptions.*;
 import model.CurrencyRate;
+import service.ExchangeService;
 import service.ExchangeServiceImpl;
 
 import java.math.BigDecimal;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class RatesController {
-    private final ExchangeServiceImpl service;
+    private final ExchangeService service;
 
     public RatesController(ExchangeServiceImpl service) {
         Objects.requireNonNull(service);
@@ -23,10 +24,6 @@ public class RatesController {
             if (command.isEmpty()) {
                 throw new InvalidCommandException();
             }
-            if (!ifInputDateCorrect(options.get(0))) {
-                throw new InputDateFormatException();
-            }
-
             switch (command) {
                 case "admin/putExchangeRate" -> handlePutExchangeRateCommand(options);
                 case "client/listExchangeRates" -> handleListExchangeRatesCommand(options);
@@ -62,8 +59,8 @@ public class RatesController {
         if (dayRates.isEmpty()) {
             System.out.println("Нет курсов");
         } else {
-            for (int i = 0; i < dayRates.size(); i++) {
-                System.out.println(dayRates.get(i));
+            for (CurrencyRate i : dayRates) {
+                System.out.println(i);
             }
         }
     }
